@@ -1,6 +1,10 @@
 #ifndef CONFIGURATION_H
 #define CONFIGURATION_H
 
+
+//#define DUAL_EXTRUDER
+
+
 // This configuration file contains the basic settings.
 // Advanced settings can be found in Configuration_adv.h
 // BASIC SETTINGS: select your board type, temperature sensor type, axis scaling, and endstop configuration
@@ -82,7 +86,7 @@
 // 999 = Leapfrog
 
 #ifndef MOTHERBOARD
-#define MOTHERBOARD 33
+#define MOTHERBOARD 34
 #endif
 
 // Define this to set a custom name for your generic Mendel,
@@ -93,7 +97,7 @@
 // #define MACHINE_UUID "00000000-0000-0000-0000-000000000000"
 
 // This defines the number of extruders
-#define EXTRUDERS 1
+#define EXTRUDERS 2
 
 //// The following define selects which power supply you have. Please choose the one that matches your setup
 // 1 = ATX
@@ -143,7 +147,7 @@
 // 110 is Pt100 with 1k pullup (non standard)
 
 #define TEMP_SENSOR_0 11
-#define TEMP_SENSOR_1 -1
+#define TEMP_SENSOR_1 11
 #define TEMP_SENSOR_2 0
 #define TEMP_SENSOR_BED 11
 
@@ -437,7 +441,7 @@ const bool Z_MAX_ENDSTOP_INVERTING = true; // set to true to invert the logic of
   // these are the offsets to the probe relative to the extruder tip (Hotend - Probe)
   #define X_PROBE_OFFSET_FROM_EXTRUDER 10
   #define Y_PROBE_OFFSET_FROM_EXTRUDER 50
-  #define Z_PROBE_OFFSET_FROM_EXTRUDER -2.2 // aumentar a distancia em .1
+  #define Z_PROBE_OFFSET_FROM_EXTRUDER -2.45 // aumentar a distancia em .1
 
   #define Z_RAISE_BEFORE_HOMING 3       // (in mm) Raise Z before homing (G28) for Probe Clearance.
                                         // Be sure you have this distance over your Z_MAX_POS in case
@@ -498,7 +502,19 @@ const bool Z_MAX_ENDSTOP_INVERTING = true; // set to true to invert the logic of
 
 // default settings
 
-#define DEFAULT_AXIS_STEPS_PER_UNIT   {80,80, 4000, 800}  // default steps per unit for Ultimaker
+//#define DEFAULT_AXIS_STEPS_PER_UNIT   {80,80, 4000, 800}  // default steps per unit for Ultimaker
+
+#ifdef DUAL_EXTRUDER
+
+  #define DEFAULT_AXIS_STEPS_PER_UNIT   {80,80, 4000, 89}  // STEPS PARA BOWNDEN 1.75
+
+#else  
+
+//  #define DEFAULT_AXIS_STEPS_PER_UNIT   {80,80, 4000, 640}  // STEPS PARA BOWDEN 3mm
+    #define DEFAULT_AXIS_STEPS_PER_UNIT   {80,80, 4000, 152}  // default steps per unit for Ultimaker
+
+#endif 
+ 
 #define DEFAULT_MAX_FEEDRATE          {500, 500, 2, 25}    // (mm/sec)
 #define DEFAULT_MAX_ACCELERATION      {6000,6000,10,10000}    // X, Y, Z, E maximum start speed for accelerated moves. E default values are good for Skeinforge 40+, for older versions raise them a lot.
 
@@ -508,8 +524,8 @@ const bool Z_MAX_ENDSTOP_INVERTING = true; // set to true to invert the logic of
 // Offset of the extruders (uncomment if using more than one and relying on firmware to position when changing).
 // The offset has to be X=0, Y=0 for the extruder 0 hotend (default extruder).
 // For the other hotends it is their distance from the extruder 0 hotend.
-// #define EXTRUDER_OFFSET_X {0.0, 20.00} // (in mm) for each extruder, offset of the hotend on the X axis
-// #define EXTRUDER_OFFSET_Y {0.0, 5.00}  // (in mm) for each extruder, offset of the hotend on the Y axis
+#define EXTRUDER_OFFSET_X {0.0, 0.00} // (in mm) for each extruder, offset of the hotend on the X axis
+#define EXTRUDER_OFFSET_Y {0.0, 0.0}  // (in mm) for each extruder, offset of the hotend on the Y axis
 
 // The speed change that does not require acceleration (i.e. the software might assume it can be done instantaneously)
 #define DEFAULT_XYJERK                20.0    // (mm/sec)
@@ -568,7 +584,7 @@ const bool Z_MAX_ENDSTOP_INVERTING = true; // set to true to invert the logic of
 
 // The RepRapDiscount Smart Controller (white PCB)
 // http://reprap.org/wiki/RepRapDiscount_Smart_Controller
-#define REPRAP_DISCOUNT_SMART_CONTROLLER
+//#define REPRAP_DISCOUNT_SMART_CONTROLLER
 
 // The GADGETS3D G3D LCD/SD Controller (blue PCB)
 // http://reprap.org/wiki/RAMPS_1.3/1.4_GADGETS3D_Shield_with_Panel
@@ -770,7 +786,7 @@ const bool Z_MAX_ENDSTOP_INVERTING = true; // set to true to invert the logic of
 // Use M206 command to correct for switch height offset to actual nozzle height. Store that setting with M500.
 //
 #define SERVO_ENDSTOPS {-1, -1, 0} // Servo index for X, Y, Z. Disable with -1
-#define SERVO_ENDSTOP_ANGLES {0,0, 0,0, 170, 90} // X,Y,Z Axis Extend and Retract angles
+#define SERVO_ENDSTOP_ANGLES {0,0, 0,0, 120, 50} // X,Y,Z Axis Extend and Retract angles
 
 /**********************************************************************\
  * Support for a filament diameter sensor
@@ -787,9 +803,9 @@ const bool Z_MAX_ENDSTOP_INVERTING = true; // set to true to invert the logic of
 #define FILAMENT_SENSOR_EXTRUDER_NUM	0  //The number of the extruder that has the filament sensor (0,1,2)
 #define MEASUREMENT_DELAY_CM			14  //measurement delay in cm.  This is the distance from filament sensor to middle of barrel
 
-#define DEFAULT_NOMINAL_FILAMENT_DIA  3.0  //Enter the diameter (in mm) of the filament generally used (3.0 mm or 1.75 mm) - this is then used in the slicer software.  Used for sensor reading validation
-#define MEASURED_UPPER_LIMIT          3.30  //upper limit factor used for sensor reading validation in mm
-#define MEASURED_LOWER_LIMIT          1.90  //lower limit factor for sensor reading validation in mm
+#define DEFAULT_NOMINAL_FILAMENT_DIA  1.75  //Enter the diameter (in mm) of the filament generally used (3.0 mm or 1.75 mm) - this is then used in the slicer software.  Used for sensor reading validation
+#define MEASURED_UPPER_LIMIT          1.80  //upper limit factor used for sensor reading validation in mm
+#define MEASURED_LOWER_LIMIT          1.60  //lower limit factor for sensor reading validation in mm
 #define MAX_MEASUREMENT_DELAY			20  //delay buffer size in bytes (1 byte = 1cm)- limits maximum measurement delay allowable (must be larger than MEASUREMENT_DELAY_CM  and lower number saves RAM)
 
 //defines used in the code
