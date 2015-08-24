@@ -594,6 +594,16 @@
 
   #else
 
+#ifndef SDSUPPORT
+// these pins are defined in the SD library if building with SD support
+  #define SCK_PIN          52
+  #define MISO_PIN         50
+  #define MOSI_PIN         51
+  #define MAX6675_SS       53
+#else
+  #define MAX6675_SS       49
+#endif
+
     #define X_STEP_PIN         54
     #define X_DIR_PIN          55
     #define X_ENABLE_PIN       38
@@ -895,6 +905,8 @@
 #define TEMP_1_PIN          -1
 #define TEMP_2_PIN          -1
 #define TEMP_BED_PIN        1    // MUST USE ANALOG INPUT NUMBERING NOT DIGITAL OUTPUT NUMBERING!!!!!!!!!
+
+
 
 #endif // MOTHERBOARD == 33 || MOTHERBOARD == 34 || MOTHERBOARD == 35 || MOTHERBOARD == 77
 
