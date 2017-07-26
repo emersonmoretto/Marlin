@@ -27,7 +27,7 @@
 // startup. Implementation of an idea by Prof Braino to inform user that any changes made to this
 // build by the user have been successfully uploaded into firmware.
 #define STRING_VERSION_CONFIG_H __DATE__ " " __TIME__ // build date and time
-#define STRING_CONFIG_H_AUTHOR "(none, default config)" // Who made the changes.
+#define STRING_CONFIG_H_AUTHOR "(emoretto, all-metal)" // Who made the changes.
 
 // SERIAL_PORT selects which serial port should be used for communication with the host.
 // This allows the connection of wireless adapters (for instance) to non-default port pins.
@@ -35,7 +35,7 @@
 #define SERIAL_PORT 0
 
 // This determines the communication speed of the printer
-#define BAUDRATE 250000
+#define BAUDRATE 115200
 
 // This enables the serial port associated to the Bluetooth interface
 //#define BTENABLED              // Enable BT interface on AT90USB devices
@@ -97,7 +97,7 @@
 // #define MACHINE_UUID "00000000-0000-0000-0000-000000000000"
 
 // This defines the number of extruders
-#define EXTRUDERS 2
+#define EXTRUDERS 1
 
 //// The following define selects which power supply you have. Please choose the one that matches your setup
 // 1 = ATX
@@ -156,8 +156,8 @@
 #define MAX_REDUNDANT_TEMP_SENSOR_DIFF 10
 
 // Actual temperature must be close to target for this long before M109 returns success
-#define TEMP_RESIDENCY_TIME 10  // (seconds)
-#define TEMP_HYSTERESIS 3       // (degC) range of +/- temperatures considered "close" to the target one
+#define TEMP_RESIDENCY_TIME 3  // (seconds)
+#define TEMP_HYSTERESIS 35       // (degC) range of +/- temperatures considered "close" to the target one
 #define TEMP_WINDOW     1       // (degC) Window around target to start the residency timer x degC early.
 
 // The minimal temperature defines the temperature below which the heater will not be enabled It is used
@@ -171,7 +171,7 @@
 // When temperature exceeds max temp, your heater will be switched off.
 // This feature exists to protect your hotend from overheating accidentally, but *NOT* from thermistor short/failure!
 // You should use MINTEMP for thermistor short/failure protection.
-#define HEATER_0_MAXTEMP 275
+#define HEATER_0_MAXTEMP 500
 #define HEATER_1_MAXTEMP 275
 #define HEATER_2_MAXTEMP 275
 #define BED_MAXTEMP 150
@@ -188,22 +188,56 @@
 // PID settings:
 // Comment the following line to disable PID and enable bang-bang.
 #define PIDTEMP
-#define BANG_MAX 255 // limits current to nozzle while in bang-bang mode; 255=full current
-#define PID_MAX 255 // limits current to nozzle while PID is active (see PID_FUNCTIONAL_RANGE below); 255=full current
+#define BANG_MAX 192 // limits current to nozzle while in bang-bang mode; 255=full current
+#define PID_MAX 192 // limits current to nozzle while PID is active (see PID_FUNCTIONAL_RANGE below); 255=full current
+
 #ifdef PIDTEMP
   //#define PID_DEBUG // Sends debug data to the serial port.
   //#define PID_OPENLOOP 1 // Puts PID in open loop. M104/M140 sets the output power from 0 to PID_MAX
-  #define PID_FUNCTIONAL_RANGE 10 // If the temperature difference between the target temperature and the actual temperature
+  #define PID_FUNCTIONAL_RANGE 15 // If the temperature difference between the target temperature and the actual temperature
                                   // is more then PID_FUNCTIONAL_RANGE then the PID will be shut off and the heater will be set to min/max.
   #define PID_INTEGRAL_DRIVE_MAX 255  //limit for the integral term
   #define K1 0.95 //smoothing factor within the PID
   #define PID_dT ((OVERSAMPLENR * 10.0)/(F_CPU / 64.0 / 256.0)) //sampling period of the temperature routine
 
 // If you are using a pre-configured hotend then you can use one of the value sets by uncommenting it
-// Ultimaker
-    #define  DEFAULT_Kp 22.2
-    #define  DEFAULT_Ki 1.08
-    #define  DEFAULT_Kd 114
+// VALORES OBTIDOS POR TENTATIVA E ERRO PARA ESTABILIZAR A 350 GRAUS
+// AUTOTUNING: de 4 TENTATIVAS: M303 E0 S300 C4 (nao ficou bom)
+// M303 PID autotune. S = target temperature, E = extruder number or -1 for bed, C = cycles.
+
+/*< 17:04:10: echo:   M301 P25.00 I0.50 D60.00
+
+For manual adjustments:
+if it overshoots a lot and oscillates, either the integral gain needs to be increased or all gains should be reduced
+Too much overshoot? Increase D, decrease P.
+Response too damped? Increase P.
+Ramps up quickly to a value below target temperature (0-160 fast) and 
+then slows down as it approaches target (160-170 slow, 170-180 really slow, etc) temperature? Try increasing the I constant.
+
+
+ToDo
+
+
+subir um pouco o MAX POWER do PID - e tentar acertar o M303: M303 E0 S370 C8
+
+M301 P18.42 I1.34 D63.36
+
+< 17:05:15:  Kp: 18.42
+< 17:05:15:  Ki: 1.34
+< 17:05:15:  Kd: 63.36
+
+
+*/
+
+//< 17:54:15:  Kp: 13.78
+//< 17:54:15:  Ki: 0.90
+//< 17:54:15:  Kd: 52.78
+
+
+    #define  DEFAULT_Kp 1.98
+    #define  DEFAULT_Ki 0.14
+    #define  DEFAULT_Kd 6.86
+
 
 // MakerGear
 //    #define  DEFAULT_Kp 7.0
@@ -511,7 +545,7 @@ const bool Z_MAX_ENDSTOP_INVERTING = true; // set to true to invert the logic of
 #else  
 
 //  #define DEFAULT_AXIS_STEPS_PER_UNIT   {80,80, 4000, 640}  // STEPS PARA BOWDEN 3mm
-    #define DEFAULT_AXIS_STEPS_PER_UNIT   {80,80, 4000, 152}  // default steps per unit for Ultimaker
+    #define DEFAULT_AXIS_STEPS_PER_UNIT   {160,160, 4000, 185}  // default steps per unit for DRV8825: 200*32 / (11 (raio) * 3,1416)
 
 #endif 
  
